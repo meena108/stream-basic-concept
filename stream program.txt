@@ -1,0 +1,48 @@
+import 'dart:async';
+
+
+void main() {
+  final controller = StreamController();
+  
+
+  //making instance order order = Order();
+  Order order =Order('vanilla');
+  
+    //add an order
+  controller.sink.add(order);
+  
+  
+  //create a baker
+  final baker = StreamTransformer.fromHandlers(
+  handleData: (type,sink) {
+    
+    if(type =='choclate') {
+      sink.add(Cake());
+    }else{
+      sink.addError("We can only bake choclate cake");
+    }
+    
+  }
+  );
+//   listen ma data or function aucha
+  controller.stream
+    .map((order) => order.type)
+    .transform(baker)
+    .listen((data) {
+      print("got the data $data");
+    },onError:(err) {
+      print("erroe $err");
+    });
+      
+  
+}
+
+class Order {
+  String type;
+  
+  Order(this.type);
+}
+
+class Cake {
+  
+}
